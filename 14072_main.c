@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "14072_basic.h"
 #include "14072_fsapi.h"
@@ -15,5 +16,13 @@ int main(){
 		return -1;
 	read(disk, &superblock, sizeof(superblock));
 	printf("%d\n", superblock.magic_number);
+
+	char *write_block = malloc(10);
+	strcpy(write_block, "Palash");
+	writeData(disk, 20, write_block);
+	char* read_block = malloc(10);
+	readData(disk, 20, read_block);
+	printf("%s\n", read_block);
+
 	return 0;
 }

@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <malloc.h>
 
 #ifndef BASIC_H
 #define BASIC_H
@@ -21,6 +22,10 @@ struct superblock{
 	int inode_start;
 	int data_start;
 	int magic_number;
+};
+
+struct mem_block { //written at the starting of each block
+	size_t n_bytes;
 };
 
 int createSFS(char* filename, int nbytes);

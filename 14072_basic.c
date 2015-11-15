@@ -3,10 +3,10 @@
 int createSFS(char* filename, int nbytes){
 	int MAX_BLOCKS = BLOCK_SIZE*8 + INODE_BLOCKS+DATA_BITMAP_BLOCKS+INODE_BITMAP_BLOCKS+1;
 	if(nbytes > MAX_BLOCKS*BLOCK_SIZE || nbytes < MIN_BLOCKS*BLOCK_SIZE)
-			return -1;
+		return -1;
 
 	//Creating file
-	int file_system_id = open(filename, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH); //Create file with permission rw-rw-r-- 
+	int file_system_id = open(filename, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH); //file with permission rw-rw-r-- 
 	if(file_system_id==-1) return -1;
 
 	// Writing zeros
@@ -34,10 +34,21 @@ int createSFS(char* filename, int nbytes){
 	return file_system_id;
 }
 
-int readData(int disk, int blockNum, void* block){
-
+int readData(int disk, int blockNum, void* block){ //block should be allocated
+	if(lseek(disk, blockNum*BLOCK_SIZE, SEEK_SET)==-1)
+		return -1;
+	struct mem_block mem_block;
+	if(read(disk, &mem_block, sizeof(mem_block))==-1) //Read no of bytes
+		return -1;
+	return read(disk, block, mem_block.n_bytes); //Read Data
 }
 
-int writeData(int disk, int blockNum, void* block){
-
+int writeData(int disk, int blockNum, void* block){ //block should be in heap
+	if(lseek(disk, blockNum*BLOCK_SIZE, SEEK_SET)==-1)
+		return -1;
+	struct mem_block mem_block;
+	mem_block.n_bytes = malloc_usable_size(block);
+	if(write(disk, &mem_block, sizeof(mem_block))==-1) //Write no of bytes
+		return -1;
+	return write(disk, block, mem_block.n_bytes); //Write data
 }
