@@ -13,4 +13,7 @@ run: main
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	rm main *.o
+	rm main *.o test_disk
+
+cleandisk:
+	rm test_disk
