@@ -31,6 +31,8 @@ int createSFS(char* filename, int nbytes){
 		return -1;
 	write(file_system_id, &superblock, sizeof(superblock));	
 
+	//TODO: Create root inode and data
+
 	return file_system_id;
 }
 
@@ -38,7 +40,11 @@ int readData(int disk, int blockNum, void* block){ //block should be allocated
 	if(lseek(disk, blockNum*BLOCK_SIZE, SEEK_SET)==-1)
 		return -1;
 	struct mem_block mem_block;
-	if(read(disk, &mem_block, sizeof(mem_block))==-1) //Read no of bytes
+	if(blockNum==0) //if superblock
+		mem_block.n_bytes = sizeof(struct superblock); 
+	else if(blockNum<(1+INODE_BITMAP_BLOCKS+DATA_BITMAP_BLOCKS+INODE_BLOCKS)) //if inode block
+		mem_block.n_bytes = BLOCK_SIZE;
+	else if(read(disk, &mem_block, sizeof(mem_block))==-1) //Read no of bytes
 		return -1;
 	return read(disk, block, mem_block.n_bytes); //Read Data
 }
@@ -48,7 +54,10 @@ int writeData(int disk, int blockNum, void* block){ //block should be in heap
 		return -1;
 	struct mem_block mem_block;
 	mem_block.n_bytes = malloc_usable_size(block);
-	if(write(disk, &mem_block, sizeof(mem_block))==-1) //Write no of bytes
-		return -1;
+	if(mem_block.n_bytes > (BLOCK_SIZE-sizeof(mem_block)))
+		mem_block.n_bytes = (BLOCK_SIZE-sizeof(mem_block));
+	if(blockNum>=(1+INODE_BITMAP_BLOCKS+DATA_BITMAP_BLOCKS+INODE_BLOCKS)) //if data block
+		if(write(disk, &mem_block, sizeof(mem_block))==-1) //Write no of bytes
+			return -1;
 	return write(disk, block, mem_block.n_bytes); //Write data
 }

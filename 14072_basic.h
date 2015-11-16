@@ -7,12 +7,13 @@
 #ifndef BASIC_H
 #define BASIC_H
 
-#define BLOCK_SIZE 64 //bytes
+#define BLOCK_SIZE 4096 //bytes
 #define INODE_SIZE 256  //bytes
 #define INODE_BLOCKS 5
 #define DATA_BITMAP_BLOCKS 1
 #define INODE_BITMAP_BLOCKS 1
 #define MIN_BLOCKS 64
+//#define MAX_FILENAME_LENGTH 64
 
 struct superblock{
 	int n_inodes;
