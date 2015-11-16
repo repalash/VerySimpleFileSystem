@@ -1,19 +1,19 @@
 CC = gcc
-CFLAGS = 
-OBJ = 14072_basic.o 14072_fsapi.o 14072_diagnostic.o 14072_main.o
-DEP = 14072_basic.h 14072_fsapi.h 14072_diagnostic.h
+CFLAGS = -Wimplicit-function-declaration
+OBJ = basic.o fsapi.o diagnostic.o main.o
+DEP = basic.h fsapi.h diagnostic.h
 
 main: $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
 
-run: main
+run: main cleandisk
 	./main
 
 %.o: %.c $(DEP)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	rm main *.o test_disk
+	rm -f main *.o test_disk
 
-cleandisk:
-	rm test_disk
+cleandisk: 
+	rm -f test_disk
