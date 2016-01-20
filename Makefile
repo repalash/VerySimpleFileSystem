@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wimplicit-function-declaration
+CFLAGS = -Wimplicit-function-declaration -std=c99
 OBJ = basic.o fsapi.o diagnostic.o main.o
 DEP = basic.h fsapi.h diagnostic.h
 
